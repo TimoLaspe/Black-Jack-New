@@ -14,7 +14,7 @@ struct GameView: View {
     var body: some View {
         
 //MARK: BACKGROUND & ITEMS
-        if (!viewModel.dataLoaded) {
+        if (!viewModel.dataLoaded || !viewModel.gameIsSet) {
             ZStack{
                 Image("blackJackBackground")
                     .resizable()
@@ -91,151 +91,27 @@ struct GameView: View {
                     if(!viewModel.playerCanBet){
                         VStack(spacing: 100){
                             VStack(){
-                                if(viewModel.dealersCardsCounter == 2){
-                                    HStack(spacing: -50){
-                                        AsyncImage(url: URL(string: viewModel.cards.randomElement()!.image)) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                    }
-                                } else if (viewModel.dealersCardsCounter == 3){
-                                    HStack(spacing: -60){
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                    }
-                                } else if (viewModel.dealersCardsCounter == 4){
+                                
                                     HStack(spacing: -70){
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
+                                        ForEach(viewModel.dealerCardStack){ card in
+                                            AsyncImage(url: URL(string: card.image)) { image in
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                
+                                            } placeholder: {
+                                                Color.gray
+                                            }
+                                            .frame(width: 100, height: 150)
+                                        }
                                     }
-                                } else if (viewModel.dealersCardsCounter == 5){
-                                    HStack(spacing: -80){
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                        AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                    image
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        
-                                                } placeholder: {
-                                                    Color.gray
-                                                }
-                                                .frame(width: 100, height: 150)
-                                    }
-                                }
-                                Text("\(viewModel.dealerValue)")
-                                    .frame(width:40,height: 40)
-                                    .bold()
-                                    .font(.system(size: 24))
-                                    .background(Color.white)
-                                    .clipShape(Circle())
+                                    Text("\(viewModel.dealerValue)")
+                                        .frame(width:40,height: 40)
+                                        .bold()
+                                        .font(.system(size: 24))
+                                        .background(Color.white)
+                                        .clipShape(Circle())
+                                
                             }
                             .padding()
                             
@@ -255,143 +131,18 @@ struct GameView: View {
                                         .font(.system(size: 24))
                                         .background(Color.white)
                                         .clipShape(Circle())
-                                    if(viewModel.playersCardsCounter == 2){
-                                        HStack(spacing: -50){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                        }
-                                    } else if (viewModel.playersCardsCounter == 3){
-                                        HStack(spacing: -60){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                        }
-                                    } else if (viewModel.playersCardsCounter == 4){
-                                        HStack(spacing: -70){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                        }
-                                    } else if (viewModel.playersCardsCounter == 5){
-                                        HStack(spacing: -80){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 100, height: 150)
+                                    
+                                    HStack(spacing: -70){
+                                        ForEach(viewModel.playerCardStack){ card in
+                                            AsyncImage(url: URL(string: card.image)) { image in
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                
+                                            } placeholder: {
+                                                Color.gray
+                                            }
+                                            .frame(width: 100, height: 150)
                                         }
                                     }
                                 }
@@ -413,156 +164,19 @@ struct GameView: View {
                                             .font(.system(size: 24))
                                             .background(Color.white)
                                             .clipShape(Circle())
-                                        if(viewModel.splitCardsCounterLeft == 1){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 80, height: 110)
-                                        } else if(viewModel.splitCardsCounterLeft == 2){
-                                            HStack(spacing: -60){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
+                                        HStack(spacing: -70){
+                                            ForEach(viewModel.leftCardStack){ card in
+                                                AsyncImage(url: URL(string: card.image)) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .aspectRatio(contentMode: .fill)
+                                                                    
+                                                            } placeholder: {
+                                                                Color.gray
+                                                            }
+                                                            .frame(width: 100, height: 150)
                                             }
-                                        } else if (viewModel.splitCardsCounterLeft == 3){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        } else if (viewModel.splitCardsCounterLeft == 4){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        } else if (viewModel.splitCardsCounterLeft == 5){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        }
-                                    }
+                                        }                                    }
                                     .padding()
                                     
                                     Spacer()
@@ -576,153 +190,17 @@ struct GameView: View {
                                             .font(.system(size: 24))
                                             .background(Color.white)
                                             .clipShape(Circle())
-                                        if(viewModel.splitCardsCounterRight == 1){
-                                            AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                        image
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fill)
-                                                            
-                                                    } placeholder: {
-                                                        Color.gray
-                                                    }
-                                                    .frame(width: 80, height: 110)
-                                        } else if(viewModel.splitCardsCounterRight == 2){
-                                            HStack(spacing: -60){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        } else if (viewModel.splitCardsCounterRight == 3){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        } else if (viewModel.splitCardsCounterRight == 4){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                            }
-                                        } else if (viewModel.splitCardsCounterRight == 5){
-                                            HStack(spacing: -70){
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
-                                                AsyncImage(url: URL(string: "https://deckofcardsapi.com/static/img/8H.png")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                
-                                                        } placeholder: {
-                                                            Color.gray
-                                                        }
-                                                        .frame(width: 80, height: 110)
+                                        HStack(spacing: -70){
+                                            ForEach(viewModel.rightCardStack){ card in
+                                                AsyncImage(url: URL(string: card.image)) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .aspectRatio(contentMode: .fill)
+                                                                    
+                                                            } placeholder: {
+                                                                Color.gray
+                                                            }
+                                                            .frame(width: 100, height: 150)
                                             }
                                         }
                                     }

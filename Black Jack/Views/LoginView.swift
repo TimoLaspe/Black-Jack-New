@@ -9,9 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @State var email : String = ""
-    @State var password : String = ""
-    @State var nickname : String = ""
+    @StateObject var viewModel: GameViewModel = GameViewModel()
     
     var body: some View {
         ZStack{
@@ -24,19 +22,19 @@ struct LoginView: View {
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 20))
-                TextField("E-Mail", text: $email)
+                TextField("E-Mail", text: $viewModel.email)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                TextField("Passwort", text: $password)
+                SecureField("Passwort", text: $viewModel.password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                TextField("Nickname", text: $nickname)
+                TextField("Nickname", text: $viewModel.nickName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                 HStack{
                     Spacer()
                     Button("Registrieren"){
-                        
+                        viewModel.signUp()
                     }
                     .foregroundColor(Color.orange)
                     .font(.custom(
@@ -45,7 +43,7 @@ struct LoginView: View {
                     .bold()
                     Spacer()
                     Button("Login"){
-                        
+                        viewModel.login()
                     }
                     .foregroundColor(Color.white)
                     .font(.custom(

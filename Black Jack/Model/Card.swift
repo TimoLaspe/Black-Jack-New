@@ -12,5 +12,4 @@ struct Card : Codable, Identifiable, Hashable{
     var code : String
     var image : String
     var value : String
-    var suit : String
 }

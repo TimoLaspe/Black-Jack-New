@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import Firebase
+import CoreData
+
 
 @MainActor class GameViewModel: ObservableObject{
     
     // Player
     @Published var playersBet : Int = 0
-    @Published var playersCardsCounter : Int = 2
     @Published var playerCardStack : [Card] = []
     @Published var leftCardStack : [Card] = []
     @Published var rightCardStack : [Card] = []
@@ -20,9 +22,11 @@ import Foundation
     @Published var splitDeckValueRight : Int = 0
     @Published var splitCardsCounterLeft : Int = 1
     @Published var splitCardsCounterRight : Int = 1
+    @Published var playedGamesCounter : Int = 0
+    @Published var wonHandsCounter : Int = 0
+    @Published var cash : Int = 6000
     
     // Dealer
-    @Published var dealersCardsCounter : Int = 2
     @Published var dealerCardStack : [Card] = []
     @Published var dealerValue : Int = 0
     
@@ -35,13 +39,22 @@ import Foundation
     @Published var playerWins : Bool = false
     @Published var dealerWins : Bool = false
     @Published var levelCounter : Int = 26
-    @Published var cash : Int = 6000
     @Published var progressValue: Float = 0.8
     @Published var musicIsOn : Bool = true
     @Published var cards : [Card] = []
     @Published var playedCards : [Card] = []
     @Published var dataLoaded: Bool = false
     @Published var gameIsSet : Bool = false
+    @Published var playedCardsStack : [Card] = []
+    @Published var isShuffling : Bool = false
+    @Published var showDealerCards : Bool = false
+    
+    // Login
+    @Published var email : String = ""
+    @Published var password : String = ""
+    @Published var nickName : String = ""
+    @Published var userIsLoggedIn : Bool = false
+    
     
     init(){
         fetchCards(completion: { sourceData in
@@ -83,37 +96,85 @@ import Foundation
         
     }
     
+    func updatePlayerValue(){
+        var sum = 0
+        for card in playerCardStack{
+            sum += checkCardValue(card: card)
+        }
+        playerValue = sum
+    }
+    
+    func updateDealerValue(){
+        var sum = 0
+        for card in dealerCardStack{
+            sum += checkCardValue(card: card)
+        }
+        dealerValue = sum
+    }
+    
+    // Counter entfernen und über .count gehen
+    
     func setGame(){
-        while playersCardsCounter < 2 {
+        while playerCardStack.count < 2 {
             playerGetCard()
         }
-        while dealersCardsCounter < 2 {
+        while dealerCardStack.count < 2 {
             nextDealerCard()
         }
         gameIsSet = true
     }
     
+    
     func playerGetCard(){
-        var newCard : Card = Card(code: cards[0].code, image: cards[0].image, value: cards[0].value, suit: cards[0].suit)
-        playerCardStack.append(newCard)
-        cards.remove(at: 0)
-        playersCardsCounter += 1
+        checkCardsCapacity()
+        playerCardStack.append(cards.remove(at: 0))
+        updatePlayerValue()
     }
     
-    func nextDealerCard() {
-        var newCard : Card = Card(code: cards[0].code, image: cards[0].image, value: cards[0].value, suit: cards[0].suit)
-        dealerCardStack.append(newCard)
-        cards.remove(at: 0)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.dealersCardsCounter += 1
-                }
+    func nextDealerCard()  {
+        checkCardsCapacity()
+        dealerCardStack.append(cards.removeFirst())
+        updateDealerValue()
+    }
+    
+    func checkCardsCapacity(){
+        if cards.isEmpty{
+            isShuffling = true
+            cards.append(contentsOf: playedCardsStack)
+            playedCardsStack = []
+            cards.shuffle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.isShuffling = false
+                    }
+            
+        }
+    }
+    
+    // MARK: Ass auf 1 oder 11 prüfen
+    
+    func checkCardValue(card : Card) -> Int {
+        switch card.value {
+        case "KING", "QUEEN", "JACK" :
+            return 10
+        case "ACE" :
+            return 11
+        default :
+            return Int(card.value) ?? 0
+        }
     }
     
     func resetCards(){
-        dealersCardsCounter = 2
-        playersCardsCounter = 2
+        checkCardsCapacity()
+        gameIsSet = false
         dealerWins = false
         playerWins = false
+        playerValue = 0
+        dealerValue = 0
+        playedCardsStack.append(contentsOf: playerCardStack)
+        playedCardsStack.append(contentsOf: dealerCardStack)
+        playerCardStack = []
+        dealerCardStack = []
+        setGame()
     }
     
     func checkWinner(){
@@ -121,10 +182,13 @@ import Foundation
             playerWins = true
         } else if(dealerValue <= 21 && dealerValue >= 17 && dealerValue > playerValue){
             dealerWins = true
+        } else if(playerValue > 21){
+            dealerWins = true
         }
     }
     
     func dealersTurn(){
+        checkCardsCapacity()
         while dealerValue < 17 {
             nextDealerCard()
         }
@@ -135,22 +199,28 @@ import Foundation
     }
     
     func doubleBet(){
-        playersBet = playersBet + playersBet
-        playersCardsCounter += 1
+        checkCardsCapacity()
+        playersBet = playersBet * 2
+        let newCard = cards.removeFirst()
+        playerCardStack.append(newCard)
         dealersTurn()
     }
     
     func playerHits(){
         playerCanSplit = false
         playerCanDouble = false
+        checkCardsCapacity()
         if(!handIsSplit){
             playerGetCard()
-            playersCardsCounter += 1
         } else if(handIsSplit && leftDeckIsActive) {
-            splitCardsCounterLeft += 1
+            leftCardStack.append(cards.removeFirst())
         } else if(handIsSplit && !leftDeckIsActive) {
-            splitCardsCounterRight += 1
+            rightCardStack.append(cards.removeFirst())
         }
+    }
+    
+    func playerStandsWhileSplit(){
+        
     }
     
     func playerStands(){
@@ -163,8 +233,27 @@ import Foundation
     }
     
     func playerSplits(){
+        checkCardsCapacity()
+        leftCardStack.append(playerCardStack.remove(at: 0))
+        rightCardStack.append(playerCardStack.remove(at: 0))
         handIsSplit = true
         playerCanSplit = false
+    }
+    
+    func signUp(){
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+        }
+    }
+    
+    func login(){
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+        }
     }
     
 }

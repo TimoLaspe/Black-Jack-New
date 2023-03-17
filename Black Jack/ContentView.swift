@@ -6,13 +6,32 @@
 //
 
 import SwiftUI
-
+import Firebase
 
 
 struct ContentView: View {
     
+    @StateObject var viewModel: GameViewModel = GameViewModel()
+    
+    @State var testMode = true
+    
     var body: some View {
-        VStack{
+        if !testMode{
+            if viewModel.userIsLoggedIn {
+                HomeView()
+            } else {
+                VStack{
+                    LoginView()
+                }
+                .onAppear{
+                    Auth.auth().addStateDidChangeListener { auth, user in
+                        if user != nil {
+                            viewModel.userIsLoggedIn.toggle()
+                        }
+                    }
+                }
+            }
+        } else {
             GameView()
         }
     }
