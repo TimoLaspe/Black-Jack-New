@@ -7,10 +7,11 @@
 
 import Foundation
 
-struct Profile : Identifiable{
-    let id = UUID()
-    var nickName : String = ""
-    var playedGames : Int = 0
-    var wonHands : Int = 0
-    var cash : Int = 0
+struct Profile : Identifiable {
+    let id : String
+    var nickName : String
+    var level : Int
+    var playedGames : Int
+    var wonHands : Int
+    var cash : Int 
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @StateObject var viewModel: GameViewModel = GameViewModel()
+    @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
     
     var body: some View {
         ZStack{
@@ -35,6 +35,11 @@ struct LoginView: View {
                     Spacer()
                     Button("Registrieren"){
                         viewModel.signUp()
+                        viewModel.addProfileData(nickName: viewModel.nickName,
+                                                 level: viewModel.level,
+                                                 playedGames: viewModel.playedGamesCounter,
+                                                 wonHands: viewModel.wonHandsCounter,
+                                                 cash: viewModel.cash)
                     }
                     .foregroundColor(Color.orange)
                     .font(.custom(

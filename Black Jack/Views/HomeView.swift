@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @StateObject var viewModel = GameViewModel()
+    @StateObject var viewModel = GameViewModel(profileViewModel: ProfileViewModel())
     
     var body: some View {
         NavigationView{

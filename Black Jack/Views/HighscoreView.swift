@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct HighscoreView: View {
+    
+    @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
+    
     var body: some View {
         ZStack{
             Image("BackgroundWithItems")
@@ -20,10 +24,8 @@ struct HighscoreView: View {
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 35))
-                List{
-                    Text("Hallo")
-                    Text("Moin")
-                    Text("Servus")
+                List (viewModel.profiles){ item in
+                    Text(item.nickName)
                 }
                 .scrollContentBackground(.hidden)
                 .position(x: 196, y: -20)

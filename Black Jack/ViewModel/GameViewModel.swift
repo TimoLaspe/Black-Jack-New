@@ -7,10 +7,11 @@
 
 import Foundation
 import Firebase
-import CoreData
 
 
 @MainActor class GameViewModel: ObservableObject{
+    
+    let profileViewModel : ProfileViewModel
     
     // Player
     @Published var playersBet : Int = 0
@@ -22,16 +23,13 @@ import CoreData
     @Published var splitDeckValueRight : Int = 0
     @Published var splitCardsCounterLeft : Int = 1
     @Published var splitCardsCounterRight : Int = 1
-    @Published var playedGamesCounter : Int = 0
-    @Published var wonHandsCounter : Int = 0
-    @Published var cash : Int = 6000
     
     // Dealer
     @Published var dealerCardStack : [Card] = []
     @Published var dealerValue : Int = 0
     
     // Game
-    @Published var playerCanSplit : Bool = true
+    @Published var playerCanSplit : Bool = false
     @Published var handIsSplit : Bool = false
     @Published var playerCanBet : Bool = false
     @Published var playerCanDouble : Bool = false
@@ -39,7 +37,7 @@ import CoreData
     @Published var playerWins : Bool = false
     @Published var dealerWins : Bool = false
     @Published var levelCounter : Int = 26
-    @Published var progressValue: Float = 0.8
+    @Published var progressValue: Float = 0.0
     @Published var musicIsOn : Bool = true
     @Published var cards : [Card] = []
     @Published var playedCards : [Card] = []
@@ -48,19 +46,25 @@ import CoreData
     @Published var playedCardsStack : [Card] = []
     @Published var isShuffling : Bool = false
     @Published var showDealerCards : Bool = false
+    @Published var isAnimated : Bool = false
+    @Published var draw : Bool = false
+    @Published var blackJack : Bool = false
     
     // Login
-    @Published var email : String = ""
-    @Published var password : String = ""
-    @Published var nickName : String = ""
+    
     @Published var userIsLoggedIn : Bool = false
     
     
-    init(){
+    init(profileViewModel: ProfileViewModel){
+        
+        self.profileViewModel = profileViewModel
+        
         fetchCards(completion: { sourceData in
             self.cards = sourceData.cards
             self.dataLoaded = true
             self.setGame()
+            self.playerCanBet = true
+            self.checkForSplit()
         })
     }
     
@@ -96,6 +100,17 @@ import CoreData
         
     }
     
+    func setPlayersBet(value: Int){
+        playersBet = playersBet + value
+        print(playersBet)
+        profileViewModel.cash = profileViewModel.cash - playersBet
+        playerCanBet = false
+    }
+    
+    func getCash(){
+        profileViewModel.cash += playersBet * 2
+    }
+    
     func updatePlayerValue(){
         var sum = 0
         for card in playerCardStack{
@@ -112,7 +127,6 @@ import CoreData
         dealerValue = sum
     }
     
-    // Counter entfernen und über .count gehen
     
     func setGame(){
         while playerCardStack.count < 2 {
@@ -146,11 +160,23 @@ import CoreData
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 self.isShuffling = false
                     }
-            
         }
     }
     
     // MARK: Ass auf 1 oder 11 prüfen
+    
+    func aceValue(for playerCardStack: [Int]) -> Int {
+        let sum = playerCardStack.reduce(0, +)
+        return sum + 10 <= 21 ? 11 : 1
+    }
+
+    func checkForSplit(){
+        let firstCard = playerCardStack[0]
+        let secondCard = playerCardStack[1]
+        if(firstCard.value == secondCard.value){
+            playerCanSplit = true
+        }
+    }
     
     func checkCardValue(card : Card) -> Int {
         switch card.value {
@@ -168,23 +194,57 @@ import CoreData
         gameIsSet = false
         dealerWins = false
         playerWins = false
+        draw = false
         playerValue = 0
         dealerValue = 0
+        playersBet = 0
         playedCardsStack.append(contentsOf: playerCardStack)
         playedCardsStack.append(contentsOf: dealerCardStack)
         playerCardStack = []
         dealerCardStack = []
+        playerCanBet = true
         setGame()
     }
     
     func checkWinner(){
         if(playerValue > dealerValue && playerValue <= 21){
-            playerWins = true
+            win()
+            
+        } else if(dealerValue > 21 && playerValue <= 21){
+            win()
+            
         } else if(dealerValue <= 21 && dealerValue >= 17 && dealerValue > playerValue){
             dealerWins = true
+            
         } else if(playerValue > 21){
             dealerWins = true
+    
+        } else if(dealerValue == playerValue){
+            draw = true
         }
+    }
+    
+    // MARK: Geht das überhaupt?
+    func checkForBlackJack(){
+        for card in playerCardStack{
+            if(card.value == "JACK" && card.value == "ACE"){
+                blackJack = true
+            }
+        }
+    }
+    
+    func win(){
+        playerWins = true
+        profileViewModel.wonHandsCounter += 1
+        progressValue += 0.1
+        if(progressValue == 1.0){
+            levelUp()
+        }
+    }
+    
+    func levelUp(){
+        profileViewModel.level += 1
+        progressValue = 0.0
     }
     
     func dealersTurn(){
@@ -217,6 +277,7 @@ import CoreData
         } else if(handIsSplit && !leftDeckIsActive) {
             rightCardStack.append(cards.removeFirst())
         }
+        isAnimated = true
     }
     
     func playerStandsWhileSplit(){
@@ -240,20 +301,6 @@ import CoreData
         playerCanSplit = false
     }
     
-    func signUp(){
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }
-        }
-    }
     
-    func login(){
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }
-        }
-    }
     
 }

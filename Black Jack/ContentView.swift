@@ -11,7 +11,7 @@ import Firebase
 
 struct ContentView: View {
     
-    @StateObject var viewModel: GameViewModel = GameViewModel()
+    @StateObject var viewModel: GameViewModel = GameViewModel(profileViewModel: ProfileViewModel())
     
     @State var testMode = true
     

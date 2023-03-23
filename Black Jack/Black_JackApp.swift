@@ -11,13 +11,15 @@ import Firebase
 @main
 struct Black_JackApp: App {
     
+    @StateObject var viewModel = ProfileViewModel()
+    
     init(){
         FirebaseApp.configure()
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(viewModel)
         }
     }
 }
