@@ -11,7 +11,16 @@ import Firebase
 
 @MainActor class GameViewModel: ObservableObject{
     
-    let profileViewModel : ProfileViewModel
+    // Profile
+    @Published var profiles : [Profile] = []
+    @Published var cash : Int = 6000
+    @Published var playedGamesCounter : Int = 0
+    @Published var wonHandsCounter : Int = 0
+    @Published var nickName : String = ""
+    @Published var wonhandsCounter: Int = 0
+    @Published var email : String = ""
+    @Published var password : String = ""
+    @Published var level : Int = 0
     
     // Player
     @Published var playersBet : Int = 0
@@ -49,15 +58,18 @@ import Firebase
     @Published var isAnimated : Bool = false
     @Published var draw : Bool = false
     @Published var blackJack : Bool = false
+    @Published var inputAvailable : Bool = true
+    
+    var aceInStack : Bool = false
     
     // Login
     
     @Published var userIsLoggedIn : Bool = false
     
     
-    init(profileViewModel: ProfileViewModel){
+    init(){
         
-        self.profileViewModel = profileViewModel
+        getProfileData()
         
         fetchCards(completion: { sourceData in
             self.cards = sourceData.cards
@@ -100,21 +112,31 @@ import Firebase
         
     }
     
+    
+    
     func setPlayersBet(value: Int){
         playersBet = playersBet + value
         print(playersBet)
-        profileViewModel.cash = profileViewModel.cash - playersBet
+        cash -= playersBet
         playerCanBet = false
     }
     
     func getCash(){
-        profileViewModel.cash += playersBet * 2
+        cash += playersBet * 2
     }
     
     func updatePlayerValue(){
         var sum = 0
         for card in playerCardStack{
             sum += checkCardValue(card: card)
+        }
+        if(aceInStack){
+            if(sum + 11 <= 21){
+                sum += 11
+            } else {
+                sum += 1
+            }
+            aceInStack = false
         }
         playerValue = sum
     }
@@ -123,6 +145,14 @@ import Firebase
         var sum = 0
         for card in dealerCardStack{
             sum += checkCardValue(card: card)
+        }
+        if(aceInStack){
+            if(sum + 11 <= 21){
+                sum += 11
+            } else {
+                sum += 1
+            }
+            aceInStack = false
         }
         dealerValue = sum
     }
@@ -136,6 +166,7 @@ import Firebase
             nextDealerCard()
         }
         gameIsSet = true
+        checkForSplit()
     }
     
     
@@ -162,13 +193,6 @@ import Firebase
                     }
         }
     }
-    
-    // MARK: Ass auf 1 oder 11 prüfen
-    
-    func aceValue(for playerCardStack: [Int]) -> Int {
-        let sum = playerCardStack.reduce(0, +)
-        return sum + 10 <= 21 ? 11 : 1
-    }
 
     func checkForSplit(){
         let firstCard = playerCardStack[0]
@@ -183,7 +207,12 @@ import Firebase
         case "KING", "QUEEN", "JACK" :
             return 10
         case "ACE" :
-            return 11
+            if(aceInStack){
+                return 1
+            } else {
+                aceInStack = true
+                return 0
+            }
         default :
             return Int(card.value) ?? 0
         }
@@ -204,46 +233,68 @@ import Firebase
         dealerCardStack = []
         playerCanBet = true
         setGame()
+        checkForBlackJack()
+        inputAvailable = true
+    }
+    
+    func stopUserInput(){
+        if(dealerWins == true || playerWins == true){
+            inputAvailable = false
+        }
     }
     
     func checkWinner(){
         if(playerValue > dealerValue && playerValue <= 21){
+            stopUserInput()
             win()
             
         } else if(dealerValue > 21 && playerValue <= 21){
+            stopUserInput()
             win()
             
         } else if(dealerValue <= 21 && dealerValue >= 17 && dealerValue > playerValue){
+            stopUserInput()
             dealerWins = true
             
         } else if(playerValue > 21){
+            stopUserInput()
             dealerWins = true
     
         } else if(dealerValue == playerValue){
+            stopUserInput()
             draw = true
         }
     }
     
-    // MARK: Geht das überhaupt?
+    
     func checkForBlackJack(){
-        for card in playerCardStack{
-            if(card.value == "JACK" && card.value == "ACE"){
-                blackJack = true
-            }
+        if(playerValue == 21 || dealerValue == 21){
+            blackJack = true
+            stopUserInput()
+        }
+    }
+    
+    func checkForValueLimit(){
+        if(playerValue > 21){
+            dealerWins = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.resetCards()
+                    }
         }
     }
     
     func win(){
         playerWins = true
-        profileViewModel.wonHandsCounter += 1
+        wonHandsCounter += 1
         progressValue += 0.1
         if(progressValue == 1.0){
             levelUp()
         }
+        getCash()
     }
     
     func levelUp(){
-        profileViewModel.level += 1
+        level += 1
         progressValue = 0.0
     }
     
@@ -277,7 +328,7 @@ import Firebase
         } else if(handIsSplit && !leftDeckIsActive) {
             rightCardStack.append(cards.removeFirst())
         }
-        isAnimated = true
+        checkForValueLimit()
     }
     
     func playerStandsWhileSplit(){
@@ -302,5 +353,69 @@ import Firebase
     }
     
     
+    //MARK: Google Firestore
+    
+    let db = Firestore.firestore()
+    
+    func updateProfileData(profileToUpdate: Profile){
+        db.collection("Profiles").document(profileToUpdate.id).setData(["playedGamesCounter": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
+    }
+    
+    func deleteProfileData(profileToDelete: Profile){
+        db.collection("Profiles").document(profileToDelete.id).delete()
+    }
+    
+    func addProfileData(nickName: String, level: Int, playedGames: Int, wonHands: Int, cash: Int){
+        db.collection("Profiles").addDocument(data: ["nickName": nickName, "level": level, "playedGames": playedGames, "wonHands": wonHands, "cash": cash]) { error in
+            if error == nil {
+                self.getProfileData()
+            } else {
+                print (error!.localizedDescription)
+            }
+        }
+    }
+    
+    func getProfileData(){
+        let db = Firestore.firestore()
+        let ref = db.collection("Profiles")
+        ref.getDocuments { snapshot, error in
+            guard error == nil else {
+                print(error!.localizedDescription)
+                return
+            }
+            
+            if let snapshot = snapshot {
+                for document in snapshot.documents {
+                    let data = document.data()
+                    
+                    let id = document.documentID
+                    let nickName = data["nickName"] as? String ?? ""
+                    let level = data["level"] as? Int ?? 0
+                    let playedGames = data["playedGames"] as? Int ?? 0
+                    let wonHands = data["wonHands"] as? Int ?? 0
+                    let cash = data["cash"] as? Int ?? 0
+                    
+                    let profile = Profile(id: id, nickName: nickName, level: level, playedGames: playedGames, wonHands: wonHands, cash: cash)
+                    self.profiles.append(profile)
+                }
+            }
+        }
+    }
+    
+    func signUp(){
+        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+        }
+    }
+    
+    func login(){
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+        }
+    }
     
 }

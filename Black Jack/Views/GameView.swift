@@ -9,13 +9,15 @@ import SwiftUI
 
 struct GameView: View {
     
-    @StateObject var viewModel: GameViewModel = GameViewModel(profileViewModel: ProfileViewModel())
-    @StateObject var profileViewModel : ProfileViewModel = ProfileViewModel()
+    @StateObject var viewModel: GameViewModel = GameViewModel()
+    
     
     var body: some View {
         GeometryReader{
             geometry in
-            //MARK: BACKGROUND & ITEMS
+            
+//MARK: BACKGROUND & ITEMS
+            
             if (!viewModel.dataLoaded || !viewModel.gameIsSet) {
                 ZStack{
                     Image("blackJackBackground")
@@ -45,7 +47,7 @@ struct GameView: View {
                                         "Copperplate",
                                         fixedSize: 16))
                                     .bold()
-                                Text("\(profileViewModel.level)")
+                                Text("\(viewModel.level)")
                                     .position(x: 75, y: 10)
                                     .font(.custom(
                                         "Copperplate",
@@ -54,7 +56,7 @@ struct GameView: View {
                                     .resizable()
                                     .frame(width: 120, height: 40)
                                     .position(x: 330, y: 10)
-                                Text("\(profileViewModel.cash)")
+                                Text("\(viewModel.cash)")
                                     .foregroundColor(Color.white)
                                     .position(x: 330, y: 10)
                                     .font(.custom(
@@ -102,11 +104,11 @@ struct GameView: View {
                             }
                         }
                         
-                        // MARK: IF PLAYER CANT BET
+// MARK: IF PLAYER CANT BET
                         
                         
                         
-                        // MARK: DEALERS STACK
+// MARK: DEALERS STACK
                         
                         if(!viewModel.playerCanBet){
                             VStack(spacing: 100){
@@ -137,11 +139,11 @@ struct GameView: View {
                                 
                                 Spacer()
                                 
-                                // MARK: IF HAND ISNT SPLIT
+// MARK: IF HAND ISNT SPLIT
                                 
                                 
                                 
-                                //MARK: PLAYERS STACK
+//MARK: PLAYERS STACK
                                 
                                 if(!viewModel.handIsSplit){
                                     VStack(){
@@ -169,13 +171,13 @@ struct GameView: View {
                                     .padding()
                                 } else {
                                     
-                                    // MARK: IF HAND IS SPLIT
+// MARK: IF HAND IS SPLIT
                                     
                                     HStack{
                                         
                                         Spacer()
                                         
-                                        // MARK: LEFT STACK
+// MARK: LEFT STACK
                                         
                                         VStack(){
                                             Text("\(viewModel.splitDeckValueLeft)")
@@ -201,7 +203,8 @@ struct GameView: View {
                                         
                                         Spacer()
                                         
-                                        // MARK: RIGHT STACK
+                                        
+// MARK: RIGHT STACK
                                         
                                         VStack(){
                                             Text("\(viewModel.splitDeckValueRight)")
@@ -231,7 +234,7 @@ struct GameView: View {
                                 }
                             }
                             
-                            // MARK: BUTTONS IF PLAYER CANT SPLIT
+// MARK: BUTTONS IF PLAYER CANT SPLIT
                             
                             if(!viewModel.playerCanSplit){
                                 HStack{
@@ -239,7 +242,9 @@ struct GameView: View {
                                     Spacer()
                                     
                                     Button(action:{
-                                        viewModel.playerHits()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.playerHits()
+                                        }
                                     }){
                                         Text("Hit")
                                             .font(.custom(
@@ -255,7 +260,9 @@ struct GameView: View {
                                     Spacer()
                                     
                                     Button(action:{
-                                        viewModel.playerStands()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.playerStands()
+                                        }
                                     }){
                                         Text("Stand")
                                             .font(.custom(
@@ -272,7 +279,9 @@ struct GameView: View {
                                     
                                     if(viewModel.playerCanDouble){
                                         Button(action:{
-                                            viewModel.doubleBet()
+                                            if(viewModel.inputAvailable){
+                                                viewModel.doubleBet()
+                                            }
                                         }){
                                             Text("Double")
                                                 .font(.custom(
@@ -290,12 +299,14 @@ struct GameView: View {
                                 }
                             } else {
                                 
-                                //MARK: BUTTONS IF PLAYER CAN SPLIT
+//MARK: BUTTONS IF PLAYER CAN SPLIT
                                 
                                 HStack{
                                     Spacer()
                                     Button(action:{
-                                        viewModel.playerHits()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.playerHits()
+                                        }
                                     }){
                                         Text("Hit")
                                             .font(.custom(
@@ -310,7 +321,9 @@ struct GameView: View {
                                     .cornerRadius(25)
                                     Spacer()
                                     Button(action:{
-                                        viewModel.playerStands()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.playerStands()
+                                        }
                                     }){
                                         Text("Stand")
                                             .font(.custom(
@@ -325,7 +338,9 @@ struct GameView: View {
                                     .cornerRadius(25)
                                     Spacer()
                                     Button(action:{
-                                        viewModel.doubleBet()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.doubleBet()
+                                        }
                                     }){
                                         Text("Double")
                                             .font(.custom(
@@ -342,7 +357,9 @@ struct GameView: View {
                                     Spacer()
                                     
                                     Button(action:{
-                                        viewModel.playerSplits()
+                                        if(viewModel.inputAvailable){
+                                            viewModel.playerSplits()
+                                        }
                                     }){
                                         Text("Split")
                                             .font(.custom(
@@ -359,7 +376,7 @@ struct GameView: View {
                             }
                         } else {
                             
-                            // MARK: IF PLAYER CAN BET
+// MARK: IF PLAYER CAN BET
                             
                             VStack(spacing: 30){
                                 Text("Einsatz wählen")

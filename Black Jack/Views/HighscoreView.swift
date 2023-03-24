@@ -10,7 +10,7 @@ import Firebase
 
 struct HighscoreView: View {
     
-    @StateObject var viewModel: ProfileViewModel = ProfileViewModel()
+    @StateObject var viewModel: GameViewModel = GameViewModel()
     
     var body: some View {
         ZStack{
