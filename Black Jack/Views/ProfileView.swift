@@ -18,7 +18,7 @@ struct ProfileView: View {
                     .ignoresSafeArea()
             
             Group{
-                Text("Manni 95")
+                Text("\(viewModel.currentUser.nickName)")
                     .position(x: 280, y: 130)
                     .foregroundColor(Color.white)
                     .font(.custom(
@@ -37,77 +37,96 @@ struct ProfileView: View {
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 28))
-                Text("25")
+                Text("\(viewModel.currentUser.level)")
                     .position(x:340, y: 47)
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 28))
                 }
             
-            Group{
+           
                 Text("Statistiken")
-                    .position(x:120, y: 205)
+                    .position(x:127, y: 190)
                     .foregroundColor(Color.orange)
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 34))
-                Text("Spiele insgesamt")
-                    .position(x:126, y: 250)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-                Text("Gewonnene Hände")
-                    .position(x:133, y: 285)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-                Text("Kontostand")
-                    .position(x:93, y: 320)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-                Text("136")
-                    .position(x:340, y: 250)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-                Text("102")
-                    .position(x:340, y: 285)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-                Text("5394")
-                    .position(x:333, y: 320)
-                    .foregroundColor(Color.white)
-                    .font(.custom(
-                        "Copperplate",
-                        fixedSize: 24))
-            }
+                VStack(spacing: -20){
+                    HStack{
+                        Text("Spiele insgesamt")
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                        Spacer()
+                        Text("\(viewModel.currentUser.playedGames)")
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                    }.padding()
+                    
+                    HStack{
+                        Text("Gewonnene Hände")
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                        Spacer()
+                        Text("\(viewModel.currentUser.wonHands)")
+                            
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                    }
+                    .padding()
+                    
+                    HStack{
+                        Text("Kontostand")
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                        Spacer()
+                        Text("\(viewModel.currentUser.cash)")
+                            .foregroundColor(Color.white)
+                            .font(.custom(
+                                "Copperplate",
+                                fixedSize: 22))
+                    }
+                    .padding()
+                }
+                .padding()
+                .position(x: 195, y: 270)
             
             Group{
                 Text("Einstellungen")
-                    .position(x:150, y: 375)
+                    .position(x:158, y: 375)
                     .foregroundColor(Color.orange)
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 34))
                 Text("Spiel Zurücksetzen")
-                    .position(x:142, y: 455)
+                    .position(x:150, y: 455)
                     .foregroundColor(Color.red)
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 24))
                 Text("Musik an / Aus")
-                    .position(x:108, y: 420)
+                    .position(x:116, y: 420)
                     .foregroundColor(Color.white)
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 24))
+                Button("Abmelden"){
+                    viewModel.logout()
+                }
+                    .position(x:104, y: 520)
+                    .foregroundColor(Color.green)
+                    .font(.custom(
+                        "Copperplate",
+                        fixedSize: 30))
                 Toggle(isOn: $viewModel.musicIsOn){
                     
                 }

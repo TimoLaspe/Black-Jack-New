@@ -23,7 +23,7 @@ struct HomeView: View {
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 20))
-                Text("Manni 95")
+                Text("\(viewModel.currentUser.nickName)")
                     .position(x: 270, y: 125)
                     .foregroundColor(Color.white)
                     .font(.custom(
@@ -39,7 +39,7 @@ struct HomeView: View {
                     .font(.custom(
                         "Copperplate",
                         fixedSize: 28))
-                Text("\(viewModel.levelCounter)")
+                Text("\(viewModel.currentUser.level)")
                     .position(x:340, y: 47)
                     .font(.custom(
                         "Copperplate",

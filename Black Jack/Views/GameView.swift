@@ -116,26 +116,45 @@ struct GameView: View {
                                     
                                     HStack(spacing: -70){
                                         ForEach(viewModel.dealerCardStack){ card in
-                                            AsyncImage(url: URL(string: card.image)) { image in
-                                                image
+                                            if(!viewModel.showDealerCards){
+                                                Image("CardBackside")
                                                     .resizable()
+                                                    .frame(width: 100, height: 150)
                                                     .aspectRatio(contentMode: .fill)
-                                                
-                                            } placeholder: {
-                                                Color.gray
+                                                    .shadow(radius: 25)
+                                            } else {
+                                                AsyncImage(url: URL(string: card.image)) { image in
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                    
+                                                } placeholder: {
+                                                    Image("CardBackside")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .shadow(radius: 25)
+                                                }
+                                                .frame(width: 100, height: 150)
                                             }
-                                            .frame(width: 100, height: 150)
                                         }
                                     }
-                                    Text("\(viewModel.dealerValue)")
-                                        .frame(width:40,height: 40)
-                                        .bold()
-                                        .font(.system(size: 24))
-                                        .background(Color.white)
-                                        .clipShape(Circle())
-                                    
-                                }
-                                .padding()
+                                    if(viewModel.showDealerCards){
+                                        Text("\(viewModel.dealerValue)")
+                                            .frame(width:40,height: 40)
+                                            .bold()
+                                            .font(.system(size: 24))
+                                            .background(Color.white)
+                                            .clipShape(Circle())
+                                    } else {
+                                        Text("?")
+                                            .frame(width:40,height: 40)
+                                            .bold()
+                                            .font(.system(size: 24))
+                                            .background(Color.white)
+                                            .clipShape(Circle())
+                                    }
+                                    }
+                                        .padding()
                                 
                                 Spacer()
                                 
@@ -162,7 +181,10 @@ struct GameView: View {
                                                         .aspectRatio(contentMode: .fill)
                                                     
                                                 } placeholder: {
-                                                    Color.gray
+                                                    Image("CardBackside")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .shadow(radius: 25)
                                                 }
                                                 .frame(width: 100, height: 150)
                                             }

@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 
 
+
 @MainActor class GameViewModel: ObservableObject{
     
     // Profile
@@ -59,12 +60,14 @@ import Firebase
     @Published var draw : Bool = false
     @Published var blackJack : Bool = false
     @Published var inputAvailable : Bool = true
+    @Published var showDealerValue : Bool = false
     
     var aceInStack : Bool = false
     
     // Login
     
     @Published var userIsLoggedIn : Bool = false
+    @Published var currentUser : Profile = Profile(id: "", nickName: "", level: 0, playedGames: 0, wonHands: 0, cash: 0)
     
     
     init(){
@@ -76,7 +79,6 @@ import Firebase
             self.dataLoaded = true
             self.setGame()
             self.playerCanBet = true
-            self.checkForSplit()
         })
     }
     
@@ -159,6 +161,7 @@ import Firebase
     
     
     func setGame(){
+        showDealerCards = false
         while playerCardStack.count < 2 {
             playerGetCard()
         }
@@ -219,6 +222,7 @@ import Firebase
     }
     
     func resetCards(){
+        updateProfileData(profileToUpdate: currentUser)
         checkCardsCapacity()
         gameIsSet = false
         dealerWins = false
@@ -299,6 +303,7 @@ import Firebase
     }
     
     func dealersTurn(){
+        showDealerCards = true
         checkCardsCapacity()
         while dealerValue < 17 {
             nextDealerCard()
@@ -312,8 +317,7 @@ import Firebase
     func doubleBet(){
         checkCardsCapacity()
         playersBet = playersBet * 2
-        let newCard = cards.removeFirst()
-        playerCardStack.append(newCard)
+        playerCardStack.append(cards.removeFirst())
         dealersTurn()
     }
     
@@ -357,6 +361,9 @@ import Firebase
     
     let db = Firestore.firestore()
     
+    // MARK: Ansatz
+    var user = Auth.auth().currentUser?.uid
+    
     func updateProfileData(profileToUpdate: Profile){
         db.collection("Profiles").document(profileToUpdate.id).setData(["playedGamesCounter": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
     }
@@ -375,8 +382,25 @@ import Firebase
         }
     }
     
+    func getCurrentUserProfile(){
+        let ref = db.collection("Profiles").document(user ?? "")
+        ref.getDocument{ document, error in
+            if let document = document, document.exists {
+                let data = document.data()
+                let id = document.documentID
+                let nickName = data?["nickName"] as? String ?? ""
+                let level = data?["level"] as? Int ?? 0
+                let playedGames = data?["playedGames"] as? Int ?? 0
+                let wonHands = data?["wonHands"] as? Int ?? 0
+                let cash = data?["cash"] as? Int ?? 0
+                
+                let profile = Profile(id: id, nickName: nickName, level: level, playedGames: playedGames, wonHands: wonHands, cash: cash)
+                self.currentUser = profile
+            }
+        }
+    }
+    
     func getProfileData(){
-        let db = Firestore.firestore()
         let ref = db.collection("Profiles")
         ref.getDocuments { snapshot, error in
             guard error == nil else {
@@ -415,6 +439,16 @@ import Firebase
             if error != nil {
                 print(error!.localizedDescription)
             }
+            self.getCurrentUserProfile()
+        }
+        print(user)
+    }
+    
+    func logout(){
+        do {
+            try Auth.auth().signOut()
+        } catch let signOutError as NSError {
+          print("Error signing out: %@", signOutError)
         }
     }
     

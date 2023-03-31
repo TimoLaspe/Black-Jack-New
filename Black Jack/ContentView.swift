@@ -13,7 +13,7 @@ struct ContentView: View {
     
     @StateObject var viewModel: GameViewModel = GameViewModel()
     
-    @State var testMode = true
+    @State var testMode = false
     
     var body: some View {
         if !testMode{
@@ -26,7 +26,7 @@ struct ContentView: View {
                 .onAppear{
                     Auth.auth().addStateDidChangeListener { auth, user in
                         if user != nil {
-                            viewModel.userIsLoggedIn.toggle()
+                            viewModel.user = user?.uid
                         }
                     }
                 }
