@@ -268,6 +268,7 @@ import Firebase
             stopUserInput()
             draw = true
         }
+        playedGamesCounter += 1
     }
     
     
@@ -362,18 +363,31 @@ import Firebase
     let db = Firestore.firestore()
     
     // MARK: Ansatz
-    var user = Auth.auth().currentUser?.uid
+  //  var user = Auth.auth().currentUser
+    var user : User?{
+        didSet{
+          objectWillChange.send()
+        }
+      }
+    
     
     func updateProfileData(profileToUpdate: Profile){
-        db.collection("Profiles").document(profileToUpdate.id).setData(["playedGamesCounter": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
+       // let docRef = db.collection("Profiles").document(user!.uid).documentID
+        db.collection("Profiles").document(profileToUpdate.id!).setData(["playedGamesCounter": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
     }
+
+/*
+    func updateProfileData(id: String, nickName: String, level: Int, playedGames: Int, wonHands: Int, cash: Int){
+        db.collection("Profiles").document(id).setData([])
+    }
+*/
     
     func deleteProfileData(profileToDelete: Profile){
-        db.collection("Profiles").document(profileToDelete.id).delete()
+        db.collection("Profiles").document(user!.uid).delete()
     }
     
-    func addProfileData(nickName: String, level: Int, playedGames: Int, wonHands: Int, cash: Int){
-        db.collection("Profiles").addDocument(data: ["nickName": nickName, "level": level, "playedGames": playedGames, "wonHands": wonHands, "cash": cash]) { error in
+    func addProfileData(id: String, nickName: String, level: Int, playedGames: Int, wonHands: Int, cash: Int){
+        db.collection("Profiles").document(id).setData(["nickName": nickName, "level": level, "playedGames": playedGames, "wonHands": wonHands, "cash": cash]) { error in
             if error == nil {
                 self.getProfileData()
             } else {
@@ -383,11 +397,13 @@ import Firebase
     }
     
     func getCurrentUserProfile(){
-        let ref = db.collection("Profiles").document(user ?? "")
+        print("user in getCurrentUserProfile " + (user?.uid ?? "default value"))
+        let ref = db.collection("Profiles").document(user!.uid)
         ref.getDocument{ document, error in
-            if let document = document, document.exists {
-                let data = document.data()
-                let id = document.documentID
+            print("getting Document: " + (document?.data()?.description ?? "default value"))
+            guard (document != nil) else {return}
+                let data = document!.data()
+                let id = document!.documentID
                 let nickName = data?["nickName"] as? String ?? ""
                 let level = data?["level"] as? Int ?? 0
                 let playedGames = data?["playedGames"] as? Int ?? 0
@@ -396,7 +412,7 @@ import Firebase
                 
                 let profile = Profile(id: id, nickName: nickName, level: level, playedGames: playedGames, wonHands: wonHands, cash: cash)
                 self.currentUser = profile
-            }
+            print("getCurrentUserProfile: " + self.currentUser.nickName.description)
         }
     }
     
@@ -426,10 +442,29 @@ import Firebase
         }
     }
     
+    func didStateChange(){
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+              guard let self = self else{
+                return
+              }
+            self.user = user
+            print("vm didStateChange: " + (self.user?.description ?? "nope"))
+            if(user != nil){
+               
+            }
+        }
+    }
+    
+    
     func signUp(){
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if error != nil {
                 print(error!.localizedDescription)
+            } else {
+                print("vm signUp: " + (result?.description ?? "nope"))
+                guard result != nil else {return}
+                let id = result!.user.uid
+                self.addProfileData(id: id, nickName: self.nickName, level: 0, playedGames: 0, wonHands: 0, cash: 6000)
             }
         }
     }
@@ -439,9 +474,7 @@ import Firebase
             if error != nil {
                 print(error!.localizedDescription)
             }
-            self.getCurrentUserProfile()
         }
-        print(user)
     }
     
     func logout(){

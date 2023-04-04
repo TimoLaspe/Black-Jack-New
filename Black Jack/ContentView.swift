@@ -17,24 +17,28 @@ struct ContentView: View {
     
     var body: some View {
         if !testMode{
-            if viewModel.userIsLoggedIn {
-                HomeView()
-            } else {
-                VStack{
-                    LoginView()
-                }
-                .onAppear{
-                    Auth.auth().addStateDidChangeListener { auth, user in
-                        if user != nil {
-                            viewModel.user = user?.uid
+            VStack{
+                if viewModel.user != nil {
+                    HomeView().onAppear{
+                        print("onAppaer in ContentView")
+                        if(viewModel.user != nil){
+                            viewModel.getCurrentUserProfile()
                         }
                     }
+                } else {
+                    VStack{
+                        LoginView()
+                    }
+                    .onAppear{
+                        viewModel.didStateChange()
+                    }
                 }
+                }.environmentObject(viewModel)
+            } else {
+                GameView().environmentObject(viewModel)
             }
-        } else {
-            GameView()
         }
-    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

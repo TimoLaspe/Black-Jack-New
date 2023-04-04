@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		6D096ACF29BF45D9009E58F0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 6D096ACE29BF45D9009E58F0 /* FirebaseAuth */; };
 		6D096AD129BF45D9009E58F0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 6D096AD029BF45D9009E58F0 /* FirebaseFirestore */; };
-		6D096AD329BF4754009E58F0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D096AD229BF4754009E58F0 /* GoogleService-Info.plist */; };
 		6D096AD529BF78F4009E58F0 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D096AD429BF78F4009E58F0 /* Profile.swift */; };
+		6D2796A729D70F0C00D4A07B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D2796A929D70F0C00D4A07B /* GoogleService-Info.plist */; };
 		6D326C9429A6494E001B66DB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D326C9329A6494E001B66DB /* ProfileView.swift */; };
 		6D34B007299FBC3B00B59D79 /* Black_JackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D34B006299FBC3B00B59D79 /* Black_JackApp.swift */; };
 		6D34B009299FBC3B00B59D79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D34B008299FBC3B00B59D79 /* ContentView.swift */; };
@@ -26,8 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6D096AD229BF4754009E58F0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6D096AD429BF78F4009E58F0 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		6D2796A829D70F0C00D4A07B /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = "Base.lproj/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6D326C9329A6494E001B66DB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		6D34B003299FBC3B00B59D79 /* Black Jack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Black Jack.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D34B006299FBC3B00B59D79 /* Black_JackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Black_JackApp.swift; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 				6D34B006299FBC3B00B59D79 /* Black_JackApp.swift */,
 				6D34B008299FBC3B00B59D79 /* ContentView.swift */,
 				6D34B00A299FBC3C00B59D79 /* Assets.xcassets */,
-				6D096AD229BF4754009E58F0 /* GoogleService-Info.plist */,
+				6D2796A929D70F0C00D4A07B /* GoogleService-Info.plist */,
 				6D34B00C299FBC3C00B59D79 /* Preview Content */,
 			);
 			path = "Black Jack";
@@ -200,7 +200,7 @@
 			files = (
 				6D34B00E299FBC3C00B59D79 /* Preview Assets.xcassets in Resources */,
 				6D34B00B299FBC3C00B59D79 /* Assets.xcassets in Resources */,
-				6D096AD329BF4754009E58F0 /* GoogleService-Info.plist in Resources */,
+				6D2796A729D70F0C00D4A07B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +226,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		6D2796A929D70F0C00D4A07B /* GoogleService-Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6D2796A829D70F0C00D4A07B /* Base */,
+			);
+			name = "GoogleService-Info.plist";
+			path = ../../../../Downloads;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		6D34B00F299FBC3C00B59D79 /* Debug */ = {

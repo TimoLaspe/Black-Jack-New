@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @StateObject var viewModel = GameViewModel()
+    @EnvironmentObject var viewModel: GameViewModel
     
     var body: some View {
         NavigationView{
@@ -93,6 +93,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView().environmentObject(GameViewModel())
     }
 }

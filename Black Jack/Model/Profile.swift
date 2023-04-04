@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Profile : Identifiable {
-    let id : String
+struct Profile : Identifiable, Codable {
+    let id : String?
     var nickName : String
     var level : Int
     var playedGames : Int
