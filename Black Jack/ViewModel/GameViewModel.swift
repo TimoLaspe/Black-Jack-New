@@ -14,11 +14,10 @@ import Firebase
     
     // Profile
     @Published var profiles : [Profile] = []
-    @Published var cash : Int = 6000
+    @Published var cash : Int = 0
     @Published var playedGamesCounter : Int = 0
     @Published var wonHandsCounter : Int = 0
     @Published var nickName : String = ""
-    @Published var wonhandsCounter: Int = 0
     @Published var email : String = ""
     @Published var password : String = ""
     @Published var level : Int = 0
@@ -47,7 +46,7 @@ import Firebase
     @Published var playerWins : Bool = false
     @Published var dealerWins : Bool = false
     @Published var levelCounter : Int = 26
-    @Published var progressValue: Float = 0.0
+    @Published var progressValue: Float = 0.9
     @Published var musicIsOn : Bool = true
     @Published var cards : [Card] = []
     @Published var playedCards : [Card] = []
@@ -119,12 +118,12 @@ import Firebase
     func setPlayersBet(value: Int){
         playersBet = playersBet + value
         print(playersBet)
-        cash -= playersBet
+        currentUser.cash -= playersBet
         playerCanBet = false
     }
     
     func getCash(){
-        cash += playersBet * 2
+        currentUser.cash += playersBet * 2
     }
     
     func updatePlayerValue(){
@@ -169,6 +168,7 @@ import Firebase
             nextDealerCard()
         }
         gameIsSet = true
+        checkForBlackJack()
         checkForSplit()
     }
     
@@ -222,7 +222,8 @@ import Firebase
     }
     
     func resetCards(){
-        updateProfileData(profileToUpdate: currentUser)
+        updateProfileData()
+        getCurrentUserProfile()
         checkCardsCapacity()
         gameIsSet = false
         dealerWins = false
@@ -237,7 +238,6 @@ import Firebase
         dealerCardStack = []
         playerCanBet = true
         setGame()
-        checkForBlackJack()
         inputAvailable = true
     }
     
@@ -371,9 +371,10 @@ import Firebase
       }
     
     
-    func updateProfileData(profileToUpdate: Profile){
+    func updateProfileData(){
        // let docRef = db.collection("Profiles").document(user!.uid).documentID
-        db.collection("Profiles").document(profileToUpdate.id!).setData(["playedGamesCounter": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
+        print("UpdateProfileData: " + currentUser.id!)
+        db.collection("Profiles").document(currentUser.id!).setData(["playedGames": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
     }
 
 /*
@@ -409,10 +410,14 @@ import Firebase
                 let playedGames = data?["playedGames"] as? Int ?? 0
                 let wonHands = data?["wonHands"] as? Int ?? 0
                 let cash = data?["cash"] as? Int ?? 0
+            
+            self.playedGamesCounter = playedGames
+            self.wonHandsCounter = wonHands
+            self.level = level
                 
                 let profile = Profile(id: id, nickName: nickName, level: level, playedGames: playedGames, wonHands: wonHands, cash: cash)
                 self.currentUser = profile
-            print("getCurrentUserProfile: " + self.currentUser.nickName.description)
+            print("getCurrentUserProfile: " + (self.currentUser.id?.description ?? "no ID found"))
         }
     }
     

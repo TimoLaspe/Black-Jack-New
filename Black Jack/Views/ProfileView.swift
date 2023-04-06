@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @StateObject var viewModel = GameViewModel()
+    @EnvironmentObject var viewModel : GameViewModel
     
     var body: some View {
         ZStack{

@@ -9,8 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @StateObject var viewModel: GameViewModel = GameViewModel()
-    
+    @EnvironmentObject var viewModel: GameViewModel    
     var body: some View {
         ZStack{
             Image("BackgroundWithText")

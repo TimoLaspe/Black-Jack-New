@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GameView: View {
     
-    @StateObject var viewModel: GameViewModel = GameViewModel()
+    @EnvironmentObject var viewModel: GameViewModel
     
     
     var body: some View {
@@ -47,7 +47,7 @@ struct GameView: View {
                                         "Copperplate",
                                         fixedSize: 16))
                                     .bold()
-                                Text("\(viewModel.level)")
+                                Text("\(viewModel.currentUser.level)")
                                     .position(x: 75, y: 10)
                                     .font(.custom(
                                         "Copperplate",
@@ -56,14 +56,14 @@ struct GameView: View {
                                     .resizable()
                                     .frame(width: 120, height: 40)
                                     .position(x: 330, y: 10)
-                                Text("\(viewModel.cash)")
+                                Text("\(viewModel.currentUser.cash)")
                                     .foregroundColor(Color.white)
                                     .position(x: 330, y: 10)
                                     .font(.custom(
                                         "Copperplate",
                                         fixedSize: 16))
                                     .bold()
-                                ProgressView(value: viewModel.progressValue)
+                                ProgressView(value: viewModel.progressValue, total: 1.0)
                                     .background(Color.white)
                                     .tint(Color.orange)
                                     .frame(width: 150)
