@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct GameView: View {
     
@@ -37,6 +38,18 @@ struct GameView: View {
                     VStack{
                         ZStack{
                             Group{
+                                NavigationLink("Menü", destination:
+                                                HomeView().navigationBarBackButtonHidden(true))
+                                    .frame(width: 70, height: 10)
+                                                        .foregroundColor(Color.black)
+                                                        .padding()
+                                                        .background(Color.orange)
+                                                        .cornerRadius(15)
+                                                        .font(.custom(
+                                                            "Copperplate",
+                                                            fixedSize: 20))
+                                                        .bold()
+                                .position(x:330, y:55)
                                 Image("bannerOrange")
                                     .resizable()
                                     .frame(width: 100, height: 30)
@@ -216,7 +229,10 @@ struct GameView: View {
                                                             .aspectRatio(contentMode: .fill)
                                                         
                                                     } placeholder: {
-                                                        Color.gray
+                                                        Image("CardBackside")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .shadow(radius: 25)
                                                     }
                                                     .frame(width: 100, height: 150)
                                                 }
@@ -243,7 +259,10 @@ struct GameView: View {
                                                             .aspectRatio(contentMode: .fill)
                                                         
                                                     } placeholder: {
-                                                        Color.gray
+                                                        Image("CardBackside")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .shadow(radius: 25)
                                                     }
                                                     .frame(width: 100, height: 150)
                                                 }
@@ -485,7 +504,7 @@ struct GameView: View {
 
 struct MyPreviewProvider_Previews: PreviewProvider {
     static var previews: some View {
-        GameView()
+        GameView().environmentObject(GameViewModel())
     }
 }
 

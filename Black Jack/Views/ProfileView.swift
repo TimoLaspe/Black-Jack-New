@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct ProfileView: View {
     
@@ -30,6 +31,7 @@ struct ProfileView: View {
                     .rotationEffect(.degrees(-180))
                     .position(x: 330, y: 35)
             }
+            
             
             Group{
                 Text("Level")
@@ -101,6 +103,8 @@ struct ProfileView: View {
                 .position(x: 195, y: 270)
             
             Group{
+                
+                
                 Text("Einstellungen")
                     .position(x:158, y: 375)
                     .foregroundColor(Color.orange)
@@ -130,9 +134,24 @@ struct ProfileView: View {
                 Toggle(isOn: $viewModel.musicIsOn){
                     
                 }
+                .onChange(of: viewModel.musicIsOn){value in
+                    viewModel.playMusic()
+                }
+                .position(x:160, y:420)
                 .tint(.orange)
-                .position(x:165, y: 420)
                 
+                NavigationLink("Menü", destination:
+                                HomeView().navigationBarBackButtonHidden(true))
+                    .frame(width: 70, height: 10)
+                                        .foregroundColor(Color.black)
+                                        .padding()
+                                        .background(Color.orange)
+                                        .cornerRadius(15)
+                                        .font(.custom(
+                                            "Copperplate",
+                                            fixedSize: 20))
+                                        .bold()
+                .position(x:80, y:740)
             }
         }
     }
@@ -140,6 +159,6 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView().environmentObject(GameViewModel())
     }
 }

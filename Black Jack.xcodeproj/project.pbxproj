@@ -18,6 +18,7 @@
 		6D34B00E299FBC3C00B59D79 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D34B00D299FBC3C00B59D79 /* Preview Assets.xcassets */; };
 		6D37833129AF8E8600EC16DF /* SourceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D37833029AF8E8600EC16DF /* SourceData.swift */; };
 		6D37833329AF8F3C00EC16DF /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D37833229AF8F3C00EC16DF /* Card.swift */; };
+		6D8B67DD29EC6B370022F265 /* backgroundSong.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6D8B67DC29EC6B370022F265 /* backgroundSong.mp3 */; };
 		6DF38E72299FEE4D00EC400F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF38E71299FEE4D00EC400F /* LoginView.swift */; };
 		6DF38E74299FF90700EC400F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF38E73299FF90700EC400F /* HomeView.swift */; };
 		6DF38E7829A01B2F00EC400F /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF38E7729A01B2F00EC400F /* GameView.swift */; };
@@ -36,6 +37,7 @@
 		6D34B00D299FBC3C00B59D79 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6D37833029AF8E8600EC16DF /* SourceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceData.swift; sourceTree = "<group>"; };
 		6D37833229AF8F3C00EC16DF /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		6D8B67DC29EC6B370022F265 /* backgroundSong.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = backgroundSong.mp3; path = ../../../../backgroundSong.mp3; sourceTree = "<group>"; };
 		6DF38E71299FEE4D00EC400F /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6DF38E73299FF90700EC400F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6DF38E7729A01B2F00EC400F /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 		6D34B005299FBC3B00B59D79 /* Black Jack */ = {
 			isa = PBXGroup;
 			children = (
+				6D8B67DB29EC6B200022F265 /* Audio */,
 				6DF38E70299FEE0800EC400F /* DataSource */,
 				6DF38E6F299FEDFD00EC400F /* Model */,
 				6DF38E6E299FEDD500EC400F /* ViewModel */,
@@ -94,6 +97,14 @@
 				6D34B00D299FBC3C00B59D79 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6D8B67DB29EC6B200022F265 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				6D8B67DC29EC6B370022F265 /* backgroundSong.mp3 */,
+			);
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		6DF38E6D299FEDBD00EC400F /* Views */ = {
@@ -201,6 +212,7 @@
 				6D34B00E299FBC3C00B59D79 /* Preview Assets.xcassets in Resources */,
 				6D34B00B299FBC3C00B59D79 /* Assets.xcassets in Resources */,
 				6D2796A729D70F0C00D4A07B /* GoogleService-Info.plist in Resources */,
+				6D8B67DD29EC6B370022F265 /* backgroundSong.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

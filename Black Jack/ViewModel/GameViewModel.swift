@@ -7,13 +7,15 @@
 
 import Foundation
 import Firebase
+import AVFAudio
 
-
+var audioPlayer : AVAudioPlayer!
 
 @MainActor class GameViewModel: ObservableObject{
     
     // Profile
     @Published var profiles : [Profile] = []
+    @Published var sortedProfiles : [Profile] = []
     @Published var cash : Int = 0
     @Published var playedGamesCounter : Int = 0
     @Published var wonHandsCounter : Int = 0
@@ -46,8 +48,8 @@ import Firebase
     @Published var playerWins : Bool = false
     @Published var dealerWins : Bool = false
     @Published var levelCounter : Int = 26
-    @Published var progressValue: Float = 0.9
-    @Published var musicIsOn : Bool = true
+    @Published var progressValue: Float = 0.0
+    @Published var musicIsOn : Bool = false
     @Published var cards : [Card] = []
     @Published var playedCards : [Card] = []
     @Published var dataLoaded: Bool = false
@@ -60,6 +62,7 @@ import Firebase
     @Published var blackJack : Bool = false
     @Published var inputAvailable : Bool = true
     @Published var showDealerValue : Bool = false
+    @Published var audioPlayer: AVAudioPlayer!
     
     var aceInStack : Bool = false
     
@@ -76,6 +79,7 @@ import Firebase
         fetchCards(completion: { sourceData in
             self.cards = sourceData.cards
             self.dataLoaded = true
+            self.setHighscores()
             self.setGame()
             self.playerCanBet = true
         })
@@ -112,6 +116,32 @@ import Firebase
         dataTask.resume()
         
     }
+    
+    func setHighscores(){
+        sortedProfiles.append(contentsOf: profiles)
+        sortedProfiles.sort{ $0.cash > $1.cash }
+    }
+    
+    
+    func playMusic(){
+        
+            let url = Bundle.main.url(forResource: "backgroundSong", withExtension: "mp3")
+            
+            guard url != nil else {
+                return
+            }
+            
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url!)
+                if(musicIsOn){
+                    audioPlayer?.play()
+                } else {
+                    audioPlayer?.stop()
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
     
     
     
@@ -291,11 +321,11 @@ import Firebase
     func win(){
         playerWins = true
         wonHandsCounter += 1
+        getCash()
         progressValue += 0.1
         if(progressValue == 1.0){
             levelUp()
         }
-        getCash()
     }
     
     func levelUp(){
@@ -343,7 +373,6 @@ import Firebase
     func playerStands(){
         if(handIsSplit){
             leftDeckIsActive = false
-            splitCardsCounterLeft = 1
         } else {
             dealersTurn()
         }
@@ -362,8 +391,6 @@ import Firebase
     
     let db = Firestore.firestore()
     
-    // MARK: Ansatz
-  //  var user = Auth.auth().currentUser
     var user : User?{
         didSet{
           objectWillChange.send()
@@ -372,16 +399,9 @@ import Firebase
     
     
     func updateProfileData(){
-       // let docRef = db.collection("Profiles").document(user!.uid).documentID
         print("UpdateProfileData: " + currentUser.id!)
-        db.collection("Profiles").document(currentUser.id!).setData(["playedGames": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": cash], merge: true)
+        db.collection("Profiles").document(currentUser.id!).setData(["playedGames": playedGamesCounter, "wonHands": wonHandsCounter, "level": level, "cash": currentUser.cash], merge: true)
     }
-
-/*
-    func updateProfileData(id: String, nickName: String, level: Int, playedGames: Int, wonHands: Int, cash: Int){
-        db.collection("Profiles").document(id).setData([])
-    }
-*/
     
     func deleteProfileData(profileToDelete: Profile){
         db.collection("Profiles").document(user!.uid).delete()
@@ -411,9 +431,11 @@ import Firebase
                 let wonHands = data?["wonHands"] as? Int ?? 0
                 let cash = data?["cash"] as? Int ?? 0
             
+            self.nickName = nickName
             self.playedGamesCounter = playedGames
             self.wonHandsCounter = wonHands
             self.level = level
+            self.cash = cash
                 
                 let profile = Profile(id: id, nickName: nickName, level: level, playedGames: playedGames, wonHands: wonHands, cash: cash)
                 self.currentUser = profile
